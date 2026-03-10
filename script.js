@@ -24,6 +24,12 @@ const cartFooter = document.getElementById('cart-footer');
 const subtotalAmount = document.getElementById('subtotal-amount');
 const startShopping = document.getElementById('start-shopping');
 
+const searchBtn = document.getElementById('search-btn');
+const searchOverlayContainer = document.getElementById('search-overlay-container');
+const searchClose = document.getElementById('search-close');
+const searchInput = document.getElementById('search-input');
+const searchResultsInfo = document.getElementById('search-results-info');
+
 // Product Elements
 const filterBtns = document.querySelectorAll('.filter-btn');
 const productCards = document.querySelectorAll('.product-card');
@@ -175,6 +181,100 @@ if (startShopping) {
         document.querySelector('#products').scrollIntoView({ behavior: 'smooth' });
     });
 }
+
+// Search Functions
+const searchResultsGrid = document.getElementById('search-results-grid');
+
+function openSearch() {
+    searchOverlayContainer.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => searchInput.focus(), 300);
+}
+
+function closeSearch() {
+    searchOverlayContainer.classList.remove('active');
+    document.body.style.overflow = '';
+
+    // Clear input and results
+    searchInput.value = '';
+    searchResultsInfo.textContent = '';
+    searchResultsGrid.innerHTML = '';
+
+    // Reset all products to visible
+    productCards.forEach(card => {
+        card.classList.remove('hidden');
+        card.style.display = '';
+    });
+
+    // Reset filter to "All"
+    filterBtns.forEach(b => b.classList.remove('active'));
+    const allBtn = document.querySelector('.filter-btn[data-filter="all"]');
+    if (allBtn) allBtn.classList.add('active');
+}
+
+searchBtn.addEventListener('click', openSearch);
+searchClose.addEventListener('click', closeSearch);
+
+searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase().trim();
+    const matches = [];
+
+    productCards.forEach(card => {
+        const name = card.dataset.name.toLowerCase();
+        const category = card.dataset.category.toLowerCase();
+
+        if (query !== '' && (name.includes(query) || category.includes(query))) {
+            matches.push(card);
+        }
+    });
+
+    if (query.length > 0) {
+        searchResultsInfo.textContent = `Showing ${matches.length} result${matches.length !== 1 ? 's' : ''} for "${query}"`;
+
+        // Build result cards
+        searchResultsGrid.innerHTML = matches.map(card => `
+            <div class="search-result-card" data-id="${card.dataset.id}">
+                <img src="${card.dataset.image}" alt="${card.dataset.name}">
+                <div class="result-info">
+                    <span class="result-category">${card.dataset.category}</span>
+                    <h4>${card.dataset.name}</h4>
+                    <span class="result-price">$${parseFloat(card.dataset.price).toFixed(2)}</span>
+                </div>
+            </div>
+        `).join('');
+
+        // Click on result card -> close search & scroll to item
+        searchResultsGrid.querySelectorAll('.search-result-card').forEach(resultCard => {
+            resultCard.addEventListener('click', () => {
+                const id = resultCard.dataset.id;
+                closeSearch();
+
+                // Show only that product
+                productCards.forEach(card => {
+                    if (card.dataset.id === id) {
+                        card.classList.remove('hidden');
+                        card.style.display = '';
+                    } else {
+                        card.classList.add('hidden');
+                        card.style.display = 'none';
+                    }
+                });
+
+                document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    } else {
+        searchResultsInfo.textContent = '';
+        searchResultsGrid.innerHTML = '';
+    }
+});
+
+// Close search on escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && searchOverlayContainer.classList.contains('active')) {
+        closeSearch();
+    }
+});
 
 function updateCartUI() {
     // Update cart count
