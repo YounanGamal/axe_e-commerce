@@ -2055,3 +2055,7 @@ button {
         justify-content: center;
     }
 }
+body.lock-scroll {
+    overflow: hidden;
+    height: 100vh;
+}

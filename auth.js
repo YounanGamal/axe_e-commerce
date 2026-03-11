@@ -13,15 +13,74 @@ const registerForm = document.getElementById('register-form');
 let currentUser = JSON.parse(localStorage.getItem('axestore-current-user')) || null;
 const users = JSON.parse(localStorage.getItem('axestore-users')) || [];
 
-function openAuth() {
-    authOverlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    showLogin();
+document.addEventListener("DOMContentLoaded", () => {
+    if (!currentUser) {
+        document.body.classList.add("lock-scroll");
+    }
+});
+
+function protectSections() {
+
+    const protectedLinks = document.querySelectorAll(
+        'a[href="#categories"], a[href="#products"], a[href="#featured"], a[href="#contact"]'
+    );
+
+    protectedLinks.forEach(link => {
+
+        link.addEventListener("click", function (e) {
+
+            if (!currentUser) {
+
+                e.preventDefault();
+
+                if (typeof openAuth === "function") {
+                    openAuth();
+                }
+
+                if (typeof showNotification === "function") {
+                    showNotification("Please login to access this section", "error");
+                }
+
+            }
+
+        });
+
+    });
+
 }
 
+document.addEventListener("DOMContentLoaded", protectSections);
+
+function openAuth() {
+
+    authOverlay.classList.add('active');
+
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+
+    showLogin();
+}
 function closeAuth() {
+
     authOverlay.classList.remove('active');
-    document.body.style.overflow = '';
+
+    setTimeout(() => {
+
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
+
+        const homeSection = document.querySelector("#home");
+
+        if (homeSection) {
+            homeSection.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
+
+    }, 300);
 }
 
 function showLogin() {
@@ -48,8 +107,15 @@ if (authBtn) {
 if (authClose) authClose.addEventListener('click', closeAuth);
 if (authOverlay) {
     authOverlay.addEventListener('click', (e) => {
-        if (e.target === authOverlay) closeAuth();
+
+        if (!currentUser) return;
+
+        if (e.target === authOverlay) {
+            closeAuth();
+        }
+
     });
+
 }
 
 if (goToRegister) {
@@ -165,4 +231,36 @@ function updateAuthUI() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', updateAuthUI);
+function protectScroll() {
+
+    window.addEventListener("scroll", () => {
+
+        if (!currentUser) {
+
+            const scrollPosition = window.scrollY;
+
+            const homeHeight = document.querySelector("#home").offsetHeight;
+
+            if (scrollPosition > homeHeight - 50) {
+
+                openAuth();
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+
+            }
+
+        }
+
+    });
+
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    protectSections();
+    protectScroll();
+    updateAuthUI();
+});
