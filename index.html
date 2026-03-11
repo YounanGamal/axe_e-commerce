@@ -14,6 +14,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="auth.css">
 </head>
 
 <body>
@@ -49,6 +50,9 @@
                         <i class="fas fa-shopping-bag"></i>
                         <span class="cart-count" id="cart-count">0</span>
                     </button>
+                    <a href="auth.html" class="auth-btn" id="auth-btn" aria-label="User Account">
+                        <i class="fas fa-user"></i>
+                    </a>
                 </div>
 
                 <button class="hamburger" id="hamburger" aria-label="Toggle menu">
@@ -864,12 +868,76 @@
         </div>
     </footer>
 
-    <!-- Back to Top Button -->
-    <button id="back-to-top" aria-label="Back to top">
+    <!-- Auth Overlay -->
+    <div class="auth-overlay" id="auth-overlay">
+        <div class="auth-container" id="auth-container">
+            <button class="auth-close" id="auth-close" aria-label="Close authentication">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <!-- Login Form -->
+            <div class="auth-box login-box active" id="login-box">
+                <div class="auth-header">
+                    <h2>Welcome <span class="gradient-text">Back</span></h2>
+                    <p>Log in to your account to continue</p>
+                </div>
+                <form id="login-form" class="auth-form">
+                    <div class="form-group">
+                        <input type="email" id="login-email" placeholder="Email Address" required>
+                        <span class="form-icon"><i class="fas fa-envelope"></i></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="login-password" placeholder="Password" required>
+                        <span class="form-icon"><i class="fas fa-lock"></i></span>
+                    </div>
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox"> <span>Remember me</span>
+                        </label>
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Log In</button>
+                    <p class="auth-switch">Don't have an account? <a href="#" id="go-to-register">Register</a></p>
+                </form>
+            </div>
+
+            <!-- Register Form -->
+            <div class="auth-box register-box" id="register-box">
+                <div class="auth-header">
+                    <h2>Create <span class="gradient-text">Account</span></h2>
+                    <p>Join AXESTORE for a premium experience</p>
+                </div>
+                <form id="register-form" class="auth-form">
+                    <div class="form-group">
+                        <input type="text" id="register-name" placeholder="Full Name" required>
+                        <span class="form-icon"><i class="fas fa-user"></i></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="register-email" placeholder="Email Address" required>
+                        <span class="form-icon"><i class="fas fa-envelope"></i></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="register-password" placeholder="Password" required>
+                        <span class="form-icon"><i class="fas fa-lock"></i></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="register-confirm-password" placeholder="Confirm Password" required>
+                        <span class="form-icon"><i class="fas fa-lock-circle"></i></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                    <p class="auth-switch">Already have an account? <a href="#" id="go-to-login">Log In</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top -->
+    <button id="back-to-top" class="back-to-top" aria-label="Back to top">
         <i class="fas fa-arrow-up"></i>
     </button>
 
     <script src="script.js"></script>
+    <script src="auth.js"></script>
 </body>
 
 </html>
