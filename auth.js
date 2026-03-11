@@ -1,6 +1,4 @@
-/* Authentication Logic */
 
-// DOM Elements
 const authBtn = document.getElementById('auth-btn');
 const authOverlay = document.getElementById('auth-overlay');
 const authClose = document.getElementById('auth-close');
@@ -11,7 +9,7 @@ const goToLogin = document.getElementById('go-to-login');
 const loginForm = document.getElementById('login-form');
 const registerForm = document.getElementById('register-form');
 
-// Auth State
+
 let currentUser = JSON.parse(localStorage.getItem('axestore-current-user')) || null;
 const users = JSON.parse(localStorage.getItem('axestore-users')) || [];
 
@@ -36,7 +34,7 @@ function showRegister() {
     registerBox.classList.add('active');
 }
 
-// Event Listeners
+
 if (authBtn) {
     authBtn.addEventListener('click', () => {
         if (currentUser) {
@@ -68,7 +66,7 @@ if (goToLogin) {
     });
 }
 
-// Register Logic
+
 if (registerForm) {
     registerForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -108,7 +106,6 @@ if (registerForm) {
     });
 }
 
-// Login Logic
 if (loginForm) {
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -138,7 +135,6 @@ function loginUser(user) {
     if (authOverlay) closeAuth();
     updateAuthUI();
 
-    // Redirect to home if on standalone auth page
     if (window.location.pathname.includes('auth.html')) {
         setTimeout(() => window.location.href = 'index.html', 1500);
     }
@@ -152,7 +148,6 @@ function logoutUser() {
     }
     updateAuthUI();
 
-    // Redirect to home if on standalone auth page
     if (window.location.pathname.includes('auth.html')) {
         setTimeout(() => window.location.href = 'index.html', 1000);
     }
@@ -170,5 +165,4 @@ function updateAuthUI() {
     }
 }
 
-// Initial UI Update on Load
 document.addEventListener('DOMContentLoaded', updateAuthUI);
